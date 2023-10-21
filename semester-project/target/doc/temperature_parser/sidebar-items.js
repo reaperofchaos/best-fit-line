@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ParseError"],"fn":["read_temperature_file","read_temperatures"],"struct":["TemperatureLine"]};
