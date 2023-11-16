@@ -1,6 +1,7 @@
 use inputlibrary::TemperatureLine;
 #[path = "utils/line_functions.rs"] mod linefunctions;
 #[path = "utils/file_output.rs"] mod fileoutput;
+#[path = "utils/matrix_operations.rs"] mod matrix_operations;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
