@@ -40,6 +40,60 @@ let mut result_vec: Vec<Vec<f64>> = vec![];
     return result_vec; 
 }
 
+
+/// gets the transpose for a matrix
+/// Description.
+/// 
+/// * `matrix` - vector of f64 vectors
+/// 
+/// Return.
+/// * matrix Vec<Vec<f64>>
+pub fn get_transpose(matrix: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
+    let mut transpose: Vec<Vec<f64>> = vec![]; 
+
+    for(row_pos, row) in matrix.iter().enumerate(){
+        for(col_pos, col) in row.iter().enumerate(){
+            if transpose.is_empty() || transpose.len() <= col_pos {
+                let new_row_vector: Vec<f64> = vec![*col];
+                transpose.push(new_row_vector);
+            }else{
+                transpose[col_pos].push(*col);
+            }
+        }
+    }
+
+    return transpose; 
+} 
+
+/// build an augmented matrix from
+/// an x matrix and a y matrix
+/// Description.
+/// 
+/// * `x_matrix` - vector of f64 vectors
+/// * `y_matrix` - vector of f64 vectors
+/// 
+/// Return.
+/// * matrix Vec<Vec<f64>>
+pub fn build_augmented_matrix(x_matrix: Vec<Vec<f64>>, y_matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
+    let mut augmented: Vec<Vec<f64>> = vec![];
+    if x_matrix.len() == y_matrix.len(){
+        for(pos, row) in x_matrix.iter().enumerate(){
+            let mut row_vec: Vec<f64> = vec![];
+            for (col_pos, col) in row.iter().enumerate(){
+                row_vec.push(*col);
+            }
+            
+            if y_matrix[pos].len() > 0 {
+                row_vec.push(y_matrix[pos][0]);  
+            }
+            
+            augmented.push(row_vec);
+        }
+    }
+
+    return augmented;   
+}
+
 /// Performs matrix multiplication
 /// Description.
 /// 
@@ -48,7 +102,7 @@ let mut result_vec: Vec<Vec<f64>> = vec![];
 /// 
 /// Return.
 /// * matrix Vec<Vec<f64>>
-fn matrix_multiplication(lhs: Vec<Vec<f64>>, rhs: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
+pub fn matrix_multiplication(lhs: Vec<Vec<f64>>, rhs: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
     // columns of left equal to rows on right
     let mut result_vec = initialize_result_matrix(lhs.clone(), rhs.clone()); 
         
@@ -259,7 +313,7 @@ fn convert_matrix_to_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
 /// 
 /// Return.
 /// * matrix Vec<Vec<f64>>
-fn convert_matrix_to_reduced_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
+pub fn convert_matrix_to_reduced_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
     let updatedMatrix = convert_matrix_to_row_echelon_form(matrix);
 
     return back_solve_matrix(updatedMatrix);

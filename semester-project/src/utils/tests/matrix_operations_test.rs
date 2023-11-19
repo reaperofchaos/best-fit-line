@@ -117,4 +117,33 @@ mod matrix_operation_tests {
         assert_eq!(matrix_operations::convert_matrix_to_reduced_row_echelon_form(test), expected);
     }
 
+    #[test]
+    fn test_get_transpose() {    
+        let test_row_1: Vec<f64> = vec![11.0, 55.0, 385.0];
+        let test_row_2: Vec<f64> = vec![55.0, 385.0, 3025.0];
+        let transpose_row_1: Vec<f64> = vec![11.0, 55.0];
+        let transpose_row_2: Vec<f64> = vec![55.0, 385.0];
+        let transpose_row_3: Vec<f64> = vec![385.0, 3025.0];
+
+        let test: Vec<Vec<f64>> = vec![test_row_1.clone(), test_row_2.clone()];
+        let expected: Vec<Vec<f64>> = vec![transpose_row_1.clone(), transpose_row_2.clone(), transpose_row_3.clone()];
+
+        assert_eq!(matrix_operations::get_transpose(test), expected);
+    }
+
+    #[test]
+    fn test_build_augmented_matrix() {    
+        let x_row_1: Vec<f64> = vec![11.0, 55.0];
+        let x_row_2: Vec<f64> = vec![55.0, 385.0];
+        let x = vec![x_row_1.clone(), x_row_2.clone()];
+        let y_row_1: Vec<f64> = vec![385.0];
+        let y_row_2: Vec<f64> = vec![3025.0];
+        let y = vec![y_row_1.clone(), y_row_2.clone()];
+
+        let expected_row_1: Vec<f64> = vec![11.0, 55.0, 385.0];
+        let expected_row_2: Vec<f64> = vec![55.0, 385.0, 3025.0];
+        let expected = vec![expected_row_1.clone(), expected_row_2.clone()];
+
+        assert_eq!(matrix_operations::build_augmented_matrix(x, y), expected);
+    }
 }

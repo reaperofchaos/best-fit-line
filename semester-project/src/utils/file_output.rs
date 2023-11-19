@@ -1,6 +1,7 @@
 use std::fs;
 use inputlibrary::TemperatureLine;
 use crate::linefunctions;
+use crate::matrix_operations;
 #[path = "tests/file_output_tests.rs"] mod file_output_tests;
 
 /// Creates a formatted line string using a start
@@ -16,9 +17,66 @@ use crate::linefunctions;
 /// 
 /// Return.
 /// * void
-pub fn format_output(start: u64, end: u64, yintercept: f32, slope: f32, method: &str)->String{
+pub fn format_output(start: u64, end: u64, yintercept: f64, slope: f64, method: &str)->String{
     format!("{start} <= x <=\t{end} ; y = \t {yintercept:.4} +\t {slope:.4} x ; {method}")
 }
+
+
+/// Creates an x matrix from the temperature reading
+/// time intervals
+/// Description.
+/// 
+/// * `data` - vector of temperature readings
+/// 
+/// Return.
+/// * Vec<Vec<f64>
+pub fn get_x_matrix(data: &Vec<TemperatureLine>)->Vec<Vec<f64>>{
+    return data.iter().map(|t| vec!(1.0, t.time_step as f64)).collect();
+}
+
+/// Creates a y matrix from the temperature readings
+/// measurements
+/// 
+/// Description.
+/// 
+/// * `data` - vector of temperature readings
+/// 
+/// Return.
+/// * Vec<Vec<f64>
+pub fn get_y_matrix(data: &Vec<TemperatureLine>)->Vec<Vec<f64>>{
+    let mut y_values: Vec<Vec<f64>> = vec![]; 
+
+    let readings: Vec<Vec<f64>> = data.iter().map(|f| f.readings.clone()).collect();
+
+    for(_rpos, r) in readings.iter().enumerate(){
+        for (col_pos, col) in r.iter().enumerate(){
+            if y_values.is_empty() || y_values.len() <= col_pos {
+                let core_y_vector: Vec<f64> = vec![*col];
+                y_values.push(core_y_vector);
+            }else{
+                y_values[col_pos].push(*col);
+            }
+        }
+    }
+
+    return y_values; 
+}
+
+/// Creates an x transpose matrix from the temperature readings
+/// measurements
+/// 
+/// Description.
+/// 
+/// * `data` - vector of temperature readings
+/// 
+/// Return.
+/// * Vec<Vec<f64>
+pub fn get_x_transpose_matrix(data: &Vec<TemperatureLine>)->Vec<Vec<f64>>{
+    let x = get_x_matrix(&data); 
+
+    return matrix_operations::get_transpose(x);
+}
+
 
 
 /// converts the temperature line vector into 
@@ -43,8 +101,8 @@ pub fn format_readings(data: Vec<TemperatureLine>)->Vec<Vec<String>>{
             if tpos < data.len() -1 {
                 let start = data[tpos].time_step;
                 let end = data[tpos + 1].time_step;
-                let slope = linefunctions::calculate_slope(end as f32, data[tpos + 1].readings[rpos] as f32, start as f32, data[tpos].readings[rpos] as f32);
-                let yintercept = linefunctions::calculate_y_intercept(start as f32, t.readings[rpos] as f32, slope);
+                let slope = linefunctions::calculate_slope(end as f64, data[tpos + 1].readings[rpos] as f64, start as f64, data[tpos].readings[rpos] as f64);
+                let yintercept = linefunctions::calculate_y_intercept(start as f64, t.readings[rpos] as f64, slope);
                 let line = format_output(start, end, yintercept, slope, "interpolation");
                 println!("{line}");
                 if lines.is_empty() || lines.len() -1 < rpos{
@@ -57,9 +115,41 @@ pub fn format_readings(data: Vec<TemperatureLine>)->Vec<Vec<String>>{
         }
         
     }
+
+    lines.push(vec!(least_squares(&data)));
     return lines;
 }
 
+
+pub fn least_squares(data: &Vec<TemperatureLine>)->String{
+    let x = get_x_matrix(&data);
+    let y = get_y_matrix(&data);
+    let x_t = get_x_transpose_matrix(&data);
+    println!("x, {:?}", x);
+    println!("y, {:?}", y);
+    println!("xt, {:?}", x_t);
+
+    let x_t_x = matrix_operations::matrix_multiplication(x_t.clone(), x.clone());
+    let x_t_y = matrix_operations::matrix_multiplication(x_t.clone(), y.clone());
+    println!("xtx, {:?}", x_t_x);
+    println!("xty, {:?}", x_t_y);
+    let augmented: Vec<Vec<f64>> = matrix_operations::build_augmented_matrix(x_t_x.clone(), x_t_y.clone());
+    let reduced_row_echeolon: Vec<Vec<f64>> = matrix_operations::convert_matrix_to_reduced_row_echelon_form(augmented);
+    
+    if reduced_row_echeolon.len() > 0 && x.len() > 0 && x[0].len()>0{
+        if reduced_row_echeolon[0].len()>1 {
+            let start = x[0][0];
+            let end = x[x.len() - 1][0]; 
+            let y_intercept = reduced_row_echeolon[reduced_row_echeolon.len()-1][0];
+            let slope = reduced_row_echeolon[reduced_row_echeolon.len()-1][1];
+            let line = format_output(start as u64, end as u64, y_intercept, slope, "least-squares");
+            return line;
+        }
+
+    }
+    return "".to_string(); 
+
+}
 /// Creates a text file using a vector
 /// of strings and a string to name the file
 /// 

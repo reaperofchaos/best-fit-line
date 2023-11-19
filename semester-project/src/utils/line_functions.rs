@@ -11,7 +11,7 @@
 /// 
 /// Return.
 /// * slope of line containing both points
-pub fn calculate_slope(x1: f32, y1: f32, x2: f32, y2: f32) -> f32{
+pub fn calculate_slope(x1: f64, y1: f64, x2: f64, y2: f64) -> f64{
     if x2 - x1 != 0.0{
         return (y2 - y1)/(x2 - x1);
     }
@@ -31,6 +31,6 @@ pub fn calculate_slope(x1: f32, y1: f32, x2: f32, y2: f32) -> f32{
 /// 
 /// Return.
 /// * y intercept of line with the point and slope
-pub fn calculate_y_intercept(x1: f32, y1: f32, m: f32 )->f32{
+pub fn calculate_y_intercept(x1: f64, y1: f64, m: f64 )->f64{
     return y1 - m*x1;
 }
