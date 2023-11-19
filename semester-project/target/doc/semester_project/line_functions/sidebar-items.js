@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["calculate_slope","calculate_y_intercept"],"mod":["line_functions_tests"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["create_file","create_files","format_output","format_readings","get_x_matrix","get_x_transpose_matrix","get_y_matrix","least_squares","write_output"],"mod":["file_output_tests"]};

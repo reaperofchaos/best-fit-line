@@ -1,8 +1,0 @@
-0 <= x <=	120 ; y = 	 67.4000 +	 0.0567 x ; least-squares
-
-0 <= x <=	120 ; y = 	 69.0000 +	 0.0433 x ; least-squares
-
-0 <= x <=	120 ; y = 	 56.0000 +	 0.0600 x ; least-squares
-
-0 <= x <=	120 ; y = 	 64.6000 +	 0.0533 x ; least-squares
-
