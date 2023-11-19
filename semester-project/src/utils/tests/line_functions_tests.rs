@@ -1,7 +1,7 @@
 
 #[cfg(test)]
 mod line_output_tests {
-    use crate::linefunctions;
+    use crate::line_functions;
 
     #[test]
     fn test_calculate_slope() {
@@ -12,7 +12,7 @@ mod line_output_tests {
 
         let expected = (y2 - y1) / (x2 - x1);
         
-        assert_eq!(linefunctions::calculate_slope(x1, y1, x2, y2), expected);
+        assert_eq!(line_functions::calculate_slope(x1, y1, x2, y2), expected);
     }
     #[test]
     fn test_calculate_y_intercept() {
@@ -21,6 +21,6 @@ mod line_output_tests {
         let slope = 0.5;
         let expected =  y1 - slope*x1;
         
-        assert_eq!(linefunctions::calculate_y_intercept(x1, y1, slope), expected);
+        assert_eq!(line_functions::calculate_y_intercept(x1, y1, slope), expected);
     }
 }

@@ -1,7 +1,7 @@
 
 #[cfg(test)]
 mod file_output_tests {
-    use crate::fileoutput;
+    use crate::file_output;
 
     #[test]
     fn test_format_string() {
@@ -12,6 +12,6 @@ mod file_output_tests {
         let method = "interpolation";
         let expected = format!("{start} <= x <=\t{end} ; y = \t {yintercept:.4} +\t {slope:.4} x ; {method}");
         
-        assert_eq!(fileoutput::format_output(start, end, yintercept, slope, method), expected);
+        assert_eq!(file_output::format_output(start, end, yintercept, slope, method), expected);
     }
 }

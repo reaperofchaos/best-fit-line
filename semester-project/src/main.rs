@@ -1,6 +1,6 @@
 use inputlibrary::TemperatureLine;
-#[path = "utils/line_functions.rs"] mod linefunctions;
-#[path = "utils/file_output.rs"] mod fileoutput;
+#[path = "utils/line_functions.rs"] mod line_functions;
+#[path = "utils/file_output.rs"] mod file_output;
 #[path = "utils/matrix_operations.rs"] mod matrix_operations;
 
 fn main() {
@@ -13,5 +13,5 @@ fn main() {
         Err(_e) => return,
     };
 
-    fileoutput::write_output(readings, base_name);
+    file_output::write_output(readings, base_name);
 }

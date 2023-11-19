@@ -2,6 +2,7 @@
 
 /// builds a matrix with placeholder values
 ///  for the rows of left and columns of right
+///
 /// Description.
 /// 
 /// * `lhs` - first vector being multiplied
@@ -18,7 +19,6 @@ let mut result_vec: Vec<Vec<f64>> = vec![];
     }
 
     if lhs.len() > 0 && rhs.len() == lhs[0].len() {
-        println!("initiaizing columns");
         // initialize a result vector
         let mut n = 0;
         while n < result_vec.len(){
@@ -42,6 +42,7 @@ let mut result_vec: Vec<Vec<f64>> = vec![];
 
 
 /// gets the transpose for a matrix
+///
 /// Description.
 /// 
 /// * `matrix` - vector of f64 vectors
@@ -50,8 +51,7 @@ let mut result_vec: Vec<Vec<f64>> = vec![];
 /// * matrix Vec<Vec<f64>>
 pub fn get_transpose(matrix: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
     let mut transpose: Vec<Vec<f64>> = vec![]; 
-
-    for(row_pos, row) in matrix.iter().enumerate(){
+    for row in matrix.iter(){
         for(col_pos, col) in row.iter().enumerate(){
             if transpose.is_empty() || transpose.len() <= col_pos {
                 let new_row_vector: Vec<f64> = vec![*col];
@@ -67,6 +67,7 @@ pub fn get_transpose(matrix: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
 
 /// build an augmented matrix from
 /// an x matrix and a y matrix
+///
 /// Description.
 /// 
 /// * `x_matrix` - vector of f64 vectors
@@ -76,10 +77,11 @@ pub fn get_transpose(matrix: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
 /// * matrix Vec<Vec<f64>>
 pub fn build_augmented_matrix(x_matrix: Vec<Vec<f64>>, y_matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
     let mut augmented: Vec<Vec<f64>> = vec![];
+
     if x_matrix.len() == y_matrix.len(){
         for(pos, row) in x_matrix.iter().enumerate(){
             let mut row_vec: Vec<f64> = vec![];
-            for (col_pos, col) in row.iter().enumerate(){
+            for col in row.iter(){
                 row_vec.push(*col);
             }
             
@@ -95,6 +97,7 @@ pub fn build_augmented_matrix(x_matrix: Vec<Vec<f64>>, y_matrix: Vec<Vec<f64>>)-
 }
 
 /// Performs matrix multiplication
+///
 /// Description.
 /// 
 /// * `lhs` - first vector being multiplied
@@ -105,14 +108,17 @@ pub fn build_augmented_matrix(x_matrix: Vec<Vec<f64>>, y_matrix: Vec<Vec<f64>>)-
 pub fn matrix_multiplication(lhs: Vec<Vec<f64>>, rhs: Vec<Vec<f64>>)-> Vec<Vec<f64>>{
     // columns of left equal to rows on right
     let mut result_vec = initialize_result_matrix(lhs.clone(), rhs.clone()); 
-        
-        //populate the result vector with product
+    let rows = result_vec.len(); 
+    let cols = result_vec[0].len();
+    let shared_cols = lhs[0].len();
+
+     //populate the result vector with product
     let mut i = 0;
-    while i < result_vec.len(){
+    while i < rows{
         let mut j = 0;
-        while j < result_vec[0].len() {
+        while j < cols {
             let mut k = 0; 
-            while k < lhs[0].len() {
+            while k < shared_cols {
                 result_vec[i][j] += lhs[i][k] * rhs[k][j];
                 k += 1; 
             }
@@ -125,10 +131,11 @@ pub fn matrix_multiplication(lhs: Vec<Vec<f64>>, rhs: Vec<Vec<f64>>)-> Vec<Vec<f
 }
 
 /// Finds row with largest value
-/// Description.
 /// finds the index of the row
 /// with the largest value at 
 // the column index
+///
+/// Description.
 /// 
 /// * `matrix` -  vector being multiplied
 /// * `col_index` - column index finding the largest value
@@ -136,32 +143,27 @@ pub fn matrix_multiplication(lhs: Vec<Vec<f64>>, rhs: Vec<Vec<f64>>)-> Vec<Vec<f
 /// Return.
 /// * matrix Vec<Vec<f64>>
 fn find_largest_row_by_col(matrix: Vec<Vec<f64>>, col_index: usize)->usize{
-    println!{"col index {}", col_index};
-
     let mut largest = matrix[col_index][col_index];
-    println!{"value at col index {} row index {} {}",col_index, col_index, largest};
 
-    let mut largestIndex = col_index;
+    let mut largest_index = col_index;
     let mut i = col_index; 
 
     if matrix.len() > 0 && matrix[0].len() >= col_index {
         while i < matrix.len() {
-            println!("row {} value at col index {} {} ", i, col_index, matrix[i][col_index]);
-
             if matrix[i][col_index] > largest{
-                println!("largest value is now {} and at row {}", matrix[i][col_index], i);
-                largestIndex = i;
+
+                largest_index = i;
                 largest = matrix[i][col_index];
             }
             i += 1; 
         }
     }
     
-    println!("largest value is {}", largestIndex);
-    return largestIndex;
+    return largest_index;
 }
 
 /// Swap rows at indexes
+///
 /// Description.
 /// 
 /// * `matrix` -  vector being multiplied
@@ -181,6 +183,7 @@ fn swap_row(mut matrix: Vec<Vec<f64>>, from: usize, to: usize)->Vec<Vec<f64>>{
 }
 
 /// Scale a row in a matrix
+///
 /// Description.
 /// 
 /// * `matrix` -  matrix scaling a row on
@@ -208,6 +211,7 @@ fn scale_row(mut matrix: Vec<Vec<f64>>, row_index: usize, scale: f64)->Vec<Vec<f
 
 /// Eliminate a row by subtracting each row by a scaled
 /// source row
+///
 /// Description.
 /// 
 /// * `matrix` -  matrix scaling a row on
@@ -237,6 +241,7 @@ fn eliminate_row(mut matrix: Vec<Vec<f64>>, row_index: usize)->Vec<Vec<f64>>{
 
 /// Function to backsolve a matrix in row
 /// echelon form
+///
 /// Description.
 /// 
 /// * `matrix` -  matrix scaling a row on
@@ -244,7 +249,6 @@ fn eliminate_row(mut matrix: Vec<Vec<f64>>, row_index: usize)->Vec<Vec<f64>>{
 /// Return.
 /// * matrix Vec<Vec<f64>>
 fn back_solve_matrix(mut matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
-    println!("total rows {}", matrix.len());
     if matrix.len() > 0 {
         let last_row_index = matrix.len() -1;
         let last_col = matrix[0].len() - 1;
@@ -273,40 +277,42 @@ fn back_solve_matrix(mut matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
 
 /// function to convert a matrix to
 /// row echelon form
+///
 /// Description.
 /// 
 /// * `matrix` -  matrix scaling a row on
 /// 
 /// Return.
 /// * matrix Vec<Vec<f64>>
-fn convert_matrix_to_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
-    let mut updatedMatrix = matrix.clone(); 
+pub fn convert_matrix_to_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
+    let mut updated_matrix = matrix.clone(); 
     // Iterate through all rows
     let mut i = 0;
-    while i < updatedMatrix.len(){
+    while i < updated_matrix.len(){
         //  Pivot
-        let largestRow = find_largest_row_by_col(updatedMatrix.clone(), i);
-        updatedMatrix = swap_row(updatedMatrix.clone(), largestRow, i);
+        let largest_row = find_largest_row_by_col(updated_matrix.clone(), i);
+        updated_matrix = swap_row(updated_matrix.clone(), largest_row, i);
 
         // scale if column of interest at position is not 1
-        if updatedMatrix[i][i] != 1.0{
-            let scale = 1.0/updatedMatrix[i][i];
-            updatedMatrix = scale_row(updatedMatrix.clone(), i, scale);
+        if updated_matrix[i][i] != 1.0{
+            let scale = 1.0/updated_matrix[i][i];
+            updated_matrix = scale_row(updated_matrix.clone(), i, scale);
         }
 
-        updatedMatrix[i][i] = 1.0; 
+        updated_matrix[i][i] = 1.0; 
 
-        if i == 0 || (i > 0  && updatedMatrix[i][i] != 0.0){
-            updatedMatrix = eliminate_row(updatedMatrix.clone(), i); 
+        if i == 0 || (i > 0  && updated_matrix[i][i] != 0.0){
+            updated_matrix = eliminate_row(updated_matrix.clone(), i); 
         }
 
         i += 1;
     }
-    return updatedMatrix; 
+    return updated_matrix; 
 }
 
 /// function to convert a matrix to
 /// reduced row echelon form
+///
 /// Description.
 /// 
 /// * `matrix` -  matrix scaling a row on
@@ -314,7 +320,7 @@ fn convert_matrix_to_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
 /// Return.
 /// * matrix Vec<Vec<f64>>
 pub fn convert_matrix_to_reduced_row_echelon_form(matrix: Vec<Vec<f64>>)->Vec<Vec<f64>>{
-    let updatedMatrix = convert_matrix_to_row_echelon_form(matrix);
+    let updated_matrix = convert_matrix_to_row_echelon_form(matrix);
 
-    return back_solve_matrix(updatedMatrix);
+    return back_solve_matrix(updated_matrix);
 }

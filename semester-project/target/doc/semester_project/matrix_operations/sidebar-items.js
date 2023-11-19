@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["back_solve_matrix","build_augmented_matrix","convert_matrix_to_reduced_row_echelon_form","convert_matrix_to_row_echelon_form","eliminate_row","find_largest_row_by_col","get_transpose","initialize_result_matrix","matrix_multiplication","scale_row","swap_row"],"mod":["matrix_operations_tests"]};
